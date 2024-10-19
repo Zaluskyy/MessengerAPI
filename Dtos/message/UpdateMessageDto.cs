@@ -4,7 +4,8 @@ namespace messenger.Dtos;
 
 public record class UpdateMessageDto(
     int Id,
-    [Required] string SenderId,
-    [Required] string ReceiverId,
-    [Required] string Text
+    [Required] int SenderId,
+    [Required] int ReceiverId,
+    [Required] string Text,
+    [Required] DateTime Time
 );
