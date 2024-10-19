@@ -11,7 +11,8 @@ public static class UserMapping
         return new User()
         {
             Id = user.Id,
-            Name = user.Name
+            Name = user.Name,
+            Password = user.Password
         };
     }
     public static User ToEntity(this UpdateUserDto user, int id)
@@ -19,14 +20,16 @@ public static class UserMapping
         return new User()
         {
             Id = id,
-            Name = user.Name
+            Name = user.Name,
+            Password = user.Password
         };
     }
     public static UserDetailDto ToUserDetailsDto(this User user)
     {
         return new(
             user.Id,
-            user.Name
+            user.Name,
+            user.Password
         );
     }
 }

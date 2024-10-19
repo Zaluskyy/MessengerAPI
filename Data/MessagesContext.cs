@@ -14,8 +14,8 @@ namespace messenger.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasData(
-                new { Id = 1, Name = "Adolf" },
-                new { Id = 2, Name = "Janusz" }
+                new { Id = 1, Name = "Adolf", Password = "1234" },
+                new { Id = 2, Name = "Janusz", Password = "2137" }
             );
         }
     }
