@@ -10,11 +10,9 @@ public static class MessageMapping
     {
         return new Message()
         {
-            Id = message.Id,
             SenderId = message.SenderId,
             ReceiverId = message.ReceiverId,
             Text = message.Text,
-            Time = message.Time
         };
     }
     public static Message ToEntity(this UpdateMessageDto message, int id)

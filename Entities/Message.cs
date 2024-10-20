@@ -10,5 +10,5 @@ public class Message
     public User? Sender { get; set; }
     public User? Receiver { get; set; }
     public required string Text { get; set; }
-    public required DateTime Time { get; set; }
+    public DateTime Time { get; set; }
 }

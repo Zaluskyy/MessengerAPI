@@ -1,5 +1,6 @@
 using System;
 using messenger.Data;
+using messenger.Dtos;
 using messenger.Entities;
 using messenger.Mapping;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,17 @@ public static class MessagesEndpoints
         })
         .WithName(GetMessageEndpointName);
 
+
+        group.MapPost("/", async (CreateMessageDto newMessage, MessagesContext dbcontext) =>
+        {
+            Message message = newMessage.ToEntity();
+            message.Time = DateTime.Now;
+
+            dbcontext.Messages.Add(message);
+            await dbcontext.SaveChangesAsync();
+
+            return Results.CreatedAtRoute(GetMessageEndpointName, new { id = message.Id }, message.ToMessageDetailsDto());
+        });
 
         return group;
     }

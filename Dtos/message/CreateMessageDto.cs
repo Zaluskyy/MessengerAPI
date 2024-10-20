@@ -7,5 +7,5 @@ public record class CreateMessageDto(
     [Required] int SenderId,
     [Required] int ReceiverId,
     [Required] string Text,
-    [Required] DateTime Time
+    DateTime Time
 );
