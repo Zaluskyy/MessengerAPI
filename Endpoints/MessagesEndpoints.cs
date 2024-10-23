@@ -39,6 +39,21 @@ public static class MessagesEndpoints
             return Results.CreatedAtRoute(GetMessageEndpointName, new { id = message.Id }, message.ToMessageDetailsDto());
         });
 
+
+        // group.MapGet("/{userId}/{friendId}", async (int userId, int friendId, MessagesContext dbContext) =>
+        // {
+        //     var messages = await dbContext.Messages
+        //     .Where(message =>
+        //         (message.SenderId == userId && message.ReceiverId == friendId) ||
+        //         (message.SenderId == friendId && message.ReceiverId == userId)
+        //         ).ToListAsync();
+
+        //     return Results.Ok(messages.Select(m => m.ToMessageDetailsDto()));
+
+
+        // });
+        // await dbContext.Messages.Include(message => message.Sender).Include(message => message.Receiver).Select(message => message.ToMessageSummaryDto()).AsNoTracking().ToListAsync()
+
         return group;
     }
 }

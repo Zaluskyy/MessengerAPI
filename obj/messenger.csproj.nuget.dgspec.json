@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/krystianzaluski/Desktop/programowanie/dotnet/messenger/messenger.csproj": {}
+    "/Users/krystianzaluski/Desktop/programowanie/dotnet/mess/messengerAPI/messenger.csproj": {}
   },
   "projects": {
-    "/Users/krystianzaluski/Desktop/programowanie/dotnet/messenger/messenger.csproj": {
+    "/Users/krystianzaluski/Desktop/programowanie/dotnet/mess/messengerAPI/messenger.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/krystianzaluski/Desktop/programowanie/dotnet/messenger/messenger.csproj",
+        "projectUniqueName": "/Users/krystianzaluski/Desktop/programowanie/dotnet/mess/messengerAPI/messenger.csproj",
         "projectName": "messenger",
-        "projectPath": "/Users/krystianzaluski/Desktop/programowanie/dotnet/messenger/messenger.csproj",
+        "projectPath": "/Users/krystianzaluski/Desktop/programowanie/dotnet/mess/messengerAPI/messenger.csproj",
         "packagesPath": "/Users/krystianzaluski/.nuget/packages/",
-        "outputPath": "/Users/krystianzaluski/Desktop/programowanie/dotnet/messenger/obj/",
+        "outputPath": "/Users/krystianzaluski/Desktop/programowanie/dotnet/mess/messengerAPI/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/krystianzaluski/.nuget/NuGet/NuGet.Config"
@@ -62,6 +62,14 @@
               "version": "[8.0.10, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
+            "Microsoft.Extensions.Caching.Memory": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Microsoft.Extensions.Caching.StackExchangeRedis": {
               "target": "Package",
               "version": "[8.0.10, )"
             },

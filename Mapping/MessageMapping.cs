@@ -45,11 +45,25 @@ public static class MessageMapping
     public static MessageDetailDto ToMessageDetailsDto(this Message message)
     {
         return new(
-            message.Id,
-            message.SenderId,
-            message.ReceiverId,
-            message.Text,
-            message.Time
-        );
+        message.Id,
+        message.SenderId, // poprawka: to jest int, więc bez .Id
+        message.ReceiverId, // poprawka: to jest int, więc bez .Id
+        message.Sender!.Name, // uzyskujemy nazwę nadawcy
+        message.Receiver!.Name, // uzyskujemy nazwę odbiorcy
+        message.Text,
+        message.Time
+    );
+
+        // return new(
+        //     message.Id,
+
+        //     message.Sender!.Name,
+        //     message.SenderId,
+        //     message.Receiver!.Name,
+        //     message.Receiver,
+
+        //     message.Text,
+        //     message.Time
+        // );
     }
 }

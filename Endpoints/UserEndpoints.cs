@@ -63,6 +63,47 @@ public static class UsersEndpoints
             return Results.NoContent();
         });
 
+        app.MapPost("/login", async (LoginDto loginDto, MessagesContext dbContext, HttpContext httpContext) =>
+        {
+            var user = await dbContext.Users.FirstOrDefaultAsync(user => user.Name == loginDto.Name && user.Password == loginDto.Password);
+
+            if (user != null)
+            {
+                httpContext.Session.SetString("UserId", user.Id.ToString());
+                return Results.Ok(new { Message = "Zalogowano opmyślnie", name = user.Name, id = user.Id });
+            }
+            return Results.Unauthorized();
+
+        });
+
+        app.MapPost("/logout", (HttpContext context) =>
+        {
+            context.Session.Clear();
+            context.Response.Cookies.Delete(".AspNetCore.Session");
+            return Results.Ok(new { message = "wylogowano pomyślnie" });
+        });
+
+        app.MapGet("/check-auth", async (HttpContext context, MessagesContext dbContext) =>
+        {
+            var userId = context.Session.GetString("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Results.Unauthorized();
+            }
+
+            var userIdInt = int.Parse(userId);
+
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userIdInt);
+
+            if (user == null)
+            {
+                return Results.Unauthorized();
+            }
+
+            return Results.Ok(new { isAuthenticated = true, name = user.Name, id = user.Id });
+        });
+
         return group;
     }
 }
