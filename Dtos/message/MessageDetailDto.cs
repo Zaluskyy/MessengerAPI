@@ -4,12 +4,14 @@ namespace messenger.Dtos;
 
 public record class MessageDetailDto(
     int Id,
-// User Sender,
-int SenderId,
-int ReceiverId,
-string Sender,
-string Receiver,
-    // User Receiver,
+    string SenderName,
+    string ReceiverName,
+    int SenderId,
+    int ReceiverId,
     string Text,
     DateTime Time
 );
+// int SenderId,
+// int ReceiverId,
+// string Sender,
+// string Receiver,

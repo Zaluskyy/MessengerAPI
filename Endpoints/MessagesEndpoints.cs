@@ -20,10 +20,11 @@ public static class MessagesEndpoints
 
         group.MapGet("/{id}", async (int id, MessagesContext dbContext) =>
         {
-            Message? message = await dbContext.Messages.FindAsync(id);
+            Message? message = await dbContext.Messages.Include(message => message.Sender).Include(message => message.Receiver).FirstOrDefaultAsync(m => m.Id == id);
+            // Message? message = await dbContext.Messages.FindAsync(id);
 
             return message is null ?
-            Results.NotFound() : Results.Ok(message.ToMessageDetailsDto());
+            Results.NotFound() : Results.Ok(message.ToMessageSummaryDto());
         })
         .WithName(GetMessageEndpointName);
 
@@ -36,24 +37,22 @@ public static class MessagesEndpoints
             dbcontext.Messages.Add(message);
             await dbcontext.SaveChangesAsync();
 
-            return Results.CreatedAtRoute(GetMessageEndpointName, new { id = message.Id }, message.ToMessageDetailsDto());
+            return Results.CreatedAtRoute(GetMessageEndpointName, new { id = message.Id }, message.ToMessageSummaryDto());
         });
 
 
-        // group.MapGet("/{userId}/{friendId}", async (int userId, int friendId, MessagesContext dbContext) =>
-        // {
-        //     var messages = await dbContext.Messages
-        //     .Where(message =>
-        //         (message.SenderId == userId && message.ReceiverId == friendId) ||
-        //         (message.SenderId == friendId && message.ReceiverId == userId)
-        //         ).ToListAsync();
+        group.MapGet("/{userId}/{friendId}", async (int userId, int friendId, MessagesContext dbContext) =>
+        {
+            var messages = await dbContext.Messages
+            .Include(message => message.Sender).Include(message => message.Receiver)
+            .Where(message =>
+                (message.Sender!.Id == userId && message.Receiver!.Id == friendId) ||
+                (message.Sender!.Id == friendId && message.Receiver!.Id == userId)
+                ).ToListAsync();
 
-        //     return Results.Ok(messages.Select(m => m.ToMessageDetailsDto()));
+            return Results.Ok(messages.Select(m => m.ToMessageDetailsDto()));
 
-
-        // });
-        // await dbContext.Messages.Include(message => message.Sender).Include(message => message.Receiver).Select(message => message.ToMessageSummaryDto()).AsNoTracking().ToListAsync()
-
+        });
         return group;
     }
 }

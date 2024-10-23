@@ -21,23 +21,17 @@ public static class MessageMapping
         {
             Id = id,
             SenderId = message.SenderId,
-            ReceiverId = message.ReceiverId,
+            ReceiverId = message.ReceiverId!,
             Text = message.Text,
             Time = message.Time
         };
-
-        // int Id,
-        // int SenderId,
-        // int ReceiverId,
-        // string Text,
-        // DateTime Time
     }
     public static MessageSummaryDto ToMessageSummaryDto(this Message message)
     {
         return new(
             message.Id,
-            message.Sender!.Name,
-            message.Receiver!.Name,
+            message.SenderId,
+            message.ReceiverId,
             message.Text,
             message.Time
         );
@@ -46,24 +40,27 @@ public static class MessageMapping
     {
         return new(
         message.Id,
-        message.SenderId, // poprawka: to jest int, więc bez .Id
-        message.ReceiverId, // poprawka: to jest int, więc bez .Id
         message.Sender!.Name, // uzyskujemy nazwę nadawcy
         message.Receiver!.Name, // uzyskujemy nazwę odbiorcy
+        message.Sender!.Id, // uzyskujemy nazwę nadawcy
+        message.Receiver!.Id, // uzyskujemy nazwę odbiorcy
         message.Text,
         message.Time
-    );
-
-        // return new(
-        //     message.Id,
-
-        //     message.Sender!.Name,
-        //     message.SenderId,
-        //     message.Receiver!.Name,
-        //     message.Receiver,
-
-        //     message.Text,
-        //     message.Time
-        // );
+        );
     }
+    // message.SenderId, // poprawka: to jest int, więc bez .Id
+    // message.ReceiverId, // poprawka: to jest int, więc bez .Id
+
+    // return new(
+    //     message.Id,
+
+    //     message.Sender!.Name,
+    //     message.SenderId,
+    //     message.Receiver!.Name,
+    //     message.Receiver,
+
+    //     message.Text,
+    //     message.Time
+    // );
+
 }
