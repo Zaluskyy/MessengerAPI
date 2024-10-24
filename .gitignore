@@ -1,0 +1,66 @@
+# Ignore build output directories
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files
+*.generated.cs
+*.generated.ts
+
+# Visual Studio specific files
+.vscode/
+.vs/
+*.code-workspace
+
+# Rider specific files
+.idea/
+
+# Dependency folders
+node_modules/
+packages/
+
+# Logs
+*.log
+logs/
+
+# Configuration files
+appsettings.*.json
+
+# Transient generated files
+*.pidb
+*.svclog
+*.suo
+*.ncrunch*
+*.cache
+*.resharper
+*.bak
+*.swp
+*.tmp
+*.tmpproj
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# dotnet user secrets (Optional)
+secrets.json
+
+# Docker and container specific files
+.docker/
+docker-compose.yml
+docker-compose.*.yml
+.dockerignore
+
+# Static website files (if using)
+wwwroot/
+
+# Publish output (if applicable)
+publish/
