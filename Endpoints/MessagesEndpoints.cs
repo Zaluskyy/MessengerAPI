@@ -41,6 +41,14 @@ public static class MessagesEndpoints
         });
 
 
+        group.MapDelete("/{id}", async (int id, MessagesContext dbContext) =>
+        {
+            await dbContext.Messages.Where(message => message.Id == id).ExecuteDeleteAsync();
+
+            return Results.NoContent();
+        });
+
+
         group.MapGet("/{userId}/{friendId}", async (int userId, int friendId, MessagesContext dbContext) =>
         {
             var messages = await dbContext.Messages

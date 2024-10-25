@@ -16,7 +16,7 @@ public static class UsersEndpoints
         var group = app.MapGroup("users");
 
         group.MapGet("/", async (MessagesContext dbContext) =>
-            await dbContext.Users.AsNoTracking().ToListAsync()
+            await dbContext.Users.AsNoTracking().Select(user => user.ToUserDetailsDto()).ToListAsync()
         );
 
         group.MapGet("/{id}", async (int id, MessagesContext dbContext) =>

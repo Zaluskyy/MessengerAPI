@@ -11,7 +11,3 @@ public record class MessageDetailDto(
     string Text,
     DateTime Time
 );
-// int SenderId,
-// int ReceiverId,
-// string Sender,
-// string Receiver,

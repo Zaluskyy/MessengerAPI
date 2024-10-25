@@ -40,27 +40,12 @@ public static class MessageMapping
     {
         return new(
         message.Id,
-        message.Sender!.Name, // uzyskujemy nazwę nadawcy
-        message.Receiver!.Name, // uzyskujemy nazwę odbiorcy
-        message.Sender!.Id, // uzyskujemy nazwę nadawcy
-        message.Receiver!.Id, // uzyskujemy nazwę odbiorcy
+        message.Sender!.Name,
+        message.Receiver!.Name,
+        message.Sender!.Id,
+        message.Receiver!.Id,
         message.Text,
         message.Time
         );
     }
-    // message.SenderId, // poprawka: to jest int, więc bez .Id
-    // message.ReceiverId, // poprawka: to jest int, więc bez .Id
-
-    // return new(
-    //     message.Id,
-
-    //     message.Sender!.Name,
-    //     message.SenderId,
-    //     message.Receiver!.Name,
-    //     message.Receiver,
-
-    //     message.Text,
-    //     message.Time
-    // );
-
 }

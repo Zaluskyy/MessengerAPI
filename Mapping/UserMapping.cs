@@ -28,8 +28,8 @@ public static class UserMapping
     {
         return new(
             user.Id,
-            user.Name,
-            user.Password
+            user.Name
+        // user.Password
         );
     }
 }
