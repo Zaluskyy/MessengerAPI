@@ -11,7 +11,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000") // Adres twojej aplikacji React
+            builder.WithOrigins("http://localhost:3000", "http://192.168.0.136:3000") // Adres twojej aplikacji React
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials(); // Umożliwia przesyłanie ciasteczek
