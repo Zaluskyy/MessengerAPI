@@ -4,6 +4,8 @@ using messenger.Dtos.user;
 using messenger.Entities;
 using messenger.Mapping;
 using Microsoft.EntityFrameworkCore;
+using messenger.Generate;
+using messenger.Migrations;
 
 namespace messenger.Endpoints;
 
@@ -16,21 +18,23 @@ public static class UsersEndpoints
         var group = app.MapGroup("users");
 
         group.MapGet("/", async (MessagesContext dbContext) =>
-            await dbContext.Users.AsNoTracking().Select(user => user.ToUserDetailsDto()).ToListAsync()
+            await dbContext.Users.Include(u => u.FriendList).AsNoTracking().Select(user => user.ToUserDetailsDto()).ToListAsync()
         );
 
         group.MapGet("/{id}", async (int id, MessagesContext dbContext) =>
         {
-            User? user = await dbContext.Users.FindAsync(id);
+            User? user = await dbContext.Users.Include(u => u.FriendList).FirstOrDefaultAsync(u => u.Id == id);
 
             return user is null ?
             Results.NotFound() : Results.Ok(user.ToUserDetailsDto());
         })
         .WithName(GetUserEndpointName);
 
+        // add new user
         group.MapPost("/", async (CreateUserDto newUser, MessagesContext dbcontext) =>
         {
             User user = newUser.ToEntity();
+            user.FriendCode = await FriendCode.GenerateUniqueFriendCode(dbcontext);
 
             dbcontext.Users.Add(user);
             await dbcontext.SaveChangesAsync();
@@ -38,39 +42,71 @@ public static class UsersEndpoints
             return Results.CreatedAtRoute(GetUserEndpointName, new { id = user.Id }, user.ToUserDetailsDto());
         });
 
-        group.MapPut("/{id}", async (int id, UpdateUserDto updatedUser, MessagesContext dbContext) =>
+        // add friend
+        //   addfriend/4/12345
+        group.MapPut("/addfriend/{userId}/{friendCode}", async (int userId, string friendCode, MessagesContext dbContext) =>
         {
 
-            var existingUser = await dbContext.Users.FindAsync(id);
+            var user = await dbContext.Users.Include(u => u.FriendList).FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (existingUser is null)
+            var friend = await dbContext.Users.Include(u => u.FriendList).FirstOrDefaultAsync(u => u.FriendCode == friendCode);
+            if (user is null)
             {
-                return Results.NotFound();
+                return Results.NotFound("User not found");
+            }
+            if (friend is null)
+            {
+                return Results.NotFound("Friend not found");
+            }
+            if (user.FriendList.Contains(friend) || friend.FriendList.Contains(user))
+            {
+                return Results.BadRequest("Already friends");
+            }
+            if (friend == user)
+            {
+                return Results.BadRequest("You cant be friend with yourself");
             }
 
-            dbContext.Entry(existingUser).CurrentValues.SetValues(updatedUser.ToEntity(id));
+            user.FriendList.Add(friend);
+            friend.FriendList.Add(user);
+
+            dbContext.Entry(user).State = EntityState.Modified;
+            dbContext.Entry(friend).State = EntityState.Modified;
 
             await dbContext.SaveChangesAsync();
 
-            return Results.NoContent();
+            return Results.Ok("Friend added successfully");
 
         });
 
-        group.MapDelete("/{id}", async (int id, MessagesContext dbContext) =>
-        {
-            await dbContext.Users.Where(user => user.Id == id).ExecuteDeleteAsync();
 
-            return Results.NoContent();
-        });
+        // group.MapPut("/{id}", async (int id, UpdateUserDto updatedUser, MessagesContext dbContext) =>
+        // {
+
+        //     var existingUser = await dbContext.Users.FindAsync(id);
+
+        //     if (existingUser is null)
+        //     {
+        //         return Results.NotFound();
+        //     }
+
+        //     dbContext.Entry(existingUser).CurrentValues.SetValues(updatedUser.ToEntity(id));
+
+        //     await dbContext.SaveChangesAsync();
+
+        //     return Results.NoContent();
+
+        // });
+
 
         app.MapPost("/login", async (LoginDto loginDto, MessagesContext dbContext, HttpContext httpContext) =>
         {
-            var user = await dbContext.Users.FirstOrDefaultAsync(user => user.Name == loginDto.Name && user.Password == loginDto.Password);
+            var user = await dbContext.Users.Include(u => u.FriendList).FirstOrDefaultAsync(user => user.Name == loginDto.Name && user.Password == loginDto.Password);
 
             if (user != null)
             {
                 httpContext.Session.SetString("UserId", user.Id.ToString());
-                return Results.Ok(new { Message = "Zalogowano opmyślnie", name = user.Name, id = user.Id });
+                return Results.Ok(new { Message = "Zalogowano opmyślnie", name = user.Name, id = user.Id, friendcode = user.FriendCode, friendlist = user.FriendList?.Select(f => new { f.Id, f.Name }).ToList() ?? [] });
             }
             return Results.Unauthorized();
 
@@ -94,16 +130,44 @@ public static class UsersEndpoints
 
             var userIdInt = int.Parse(userId);
 
-            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userIdInt);
+            var user = await dbContext.Users.Include(u => u.FriendList).FirstOrDefaultAsync(u => u.Id == userIdInt);
 
             if (user == null)
             {
                 return Results.Unauthorized();
             }
 
-            return Results.Ok(new { isAuthenticated = true, name = user.Name, id = user.Id });
+            return Results.Ok(new { isAuthenticated = true, name = user.Name, id = user.Id, friendcode = user.FriendCode, friendlist = user.FriendList?.Select(f => new { f.Id, f.Name }).ToList() ?? [] });
         });
 
         return group;
     }
 }
+
+
+
+
+// group.MapPut("/{id}", async (int id, UpdateUserDto updatedUser, MessagesContext dbContext) =>
+// {
+
+//     var existingUser = await dbContext.Users.FindAsync(id);
+
+//     if (existingUser is null)
+//     {
+//         return Results.NotFound();
+//     }
+
+//     dbContext.Entry(existingUser).CurrentValues.SetValues(updatedUser.ToEntity(id));
+
+//     await dbContext.SaveChangesAsync();
+
+//     return Results.NoContent();
+
+// });
+
+// group.MapDelete("/{id}", async (int id, MessagesContext dbContext) =>
+// {
+//     await dbContext.Users.Where(user => user.Id == id).ExecuteDeleteAsync();
+
+//     return Results.NoContent();
+// });
