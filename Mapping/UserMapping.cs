@@ -13,7 +13,6 @@ public static class UserMapping
             Id = user.Id,
             Name = user.Name,
             Password = user.Password,
-            FriendList = user.FriendList
         };
     }
     public static User ToEntity(this UpdateUserDto user, int id)
@@ -32,7 +31,7 @@ public static class UserMapping
             user.Name,
             user.FriendCode!,
             user.FriendList?.Select(f => new FriendDto(f.Id, f.Name)).ToList() ?? []
-        // user.Password
+
         );
     }
 }

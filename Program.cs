@@ -11,20 +11,20 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000", "http://192.168.0.136:3000") // Adres twojej aplikacji React
+            builder.WithOrigins("http://localhost:3000", "http://192.168.0.202:3000")
                    .AllowAnyHeader()
                    .AllowAnyMethod()
-                   .AllowCredentials(); // Umożliwia przesyłanie ciasteczek
+                   .AllowCredentials();
         });
 });
-// Dodanie pamięci podręcznej do DI
-builder.Services.AddDistributedMemoryCache(); // Używamy pamięci lokalnej
+
+builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = false; // Możesz ustawić to na true dla większego bezpieczeństwa
-    options.Cookie.IsEssential = true; // Umożliwia korzystanie z sesji nawet jeśli użytkownik nie zaakceptuje ciasteczek
+    options.Cookie.HttpOnly = false;
+    options.Cookie.IsEssential = true;
 });
 
 

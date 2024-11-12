@@ -52,28 +52,33 @@ public static class UsersEndpoints
             var friend = await dbContext.Users.Include(u => u.FriendList).FirstOrDefaultAsync(u => u.FriendCode == friendCode);
             if (user is null)
             {
-                return Results.NotFound("User not found");
+                return Results.BadRequest(new { message = "User not found" });
             }
             if (friend is null)
             {
-                return Results.NotFound("Friend not found");
+                return Results.NotFound(new { message = "Friend not found" });
             }
             if (user.FriendList.Contains(friend) || friend.FriendList.Contains(user))
             {
-                return Results.BadRequest("Already friends");
+                return Results.NotFound(new { message = "You are already friends" });
             }
             if (friend == user)
             {
-                return Results.BadRequest("You cant be friend with yourself");
+                return Results.NotFound(new { message = "You can't be friend with yourself" });
             }
 
             user.FriendList.Add(friend);
             friend.FriendList.Add(user);
 
-            dbContext.Entry(user).State = EntityState.Modified;
-            dbContext.Entry(friend).State = EntityState.Modified;
-
             await dbContext.SaveChangesAsync();
+
+            var updatedUser = await dbContext.Users
+                .Include(u => u.FriendList)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            Console.WriteLine($"User {user.Name} friends after update: {string.Join(", ", user.FriendList.Select(f => f.Name))}");
+            Console.WriteLine($"Friend {friend.Name} friends after update: {string.Join(", ", friend.FriendList.Select(f => f.Name))}");
+
 
             return Results.Ok("Friend added successfully");
 
